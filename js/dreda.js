@@ -17,39 +17,6 @@ var grouped;
 var groupedSize;
 var groupedKeys;
 
-// color options (rainbow husl, 30 shades)
-colors = _.shuffle(
-    [ '#f79987',
-      '#f7818a',
-      '#f85d8c',
-      '#ed3694',
-      '#da369d',
-      '#cb36a4',
-      '#bc36aa',
-      '#ac36af',
-      '#9a36b3',
-      '#8136b9',
-      '#5735bf',
-      '#3764c0',
-      '#3884be',
-      '#3997bd',
-      '#3aa6bc',
-      '#3ab1bb',
-      '#3bbcba',
-      '#3cc8b8',
-      '#3dd5b7',
-      '#3ee6b4',
-      '#59f6af',
-      '#86f5a8',
-      '#a3f5a0',
-      '#bbf598',
-      '#d2f58e',
-      '#eaf580',
-      '#f6e67b',
-      '#f6d27f',
-      '#f6bf82',
-      '#f7ae85' ]);
-
 // ratios
 var edge = 500;
 var pointToEdgeRatio = .05;
@@ -254,6 +221,12 @@ function plotData() {
   groupedSize = _.size(grouped);
   groupedKeys = Object.keys(grouped);
 
+  // color options
+  colors = palette('rainbow', groupedSize);
+  for(var i=0;i<colors.length;i++){
+      colors[i]="#"+colors[i];
+  }
+
   for (var i = 0; i < groupedSize; i++) {
 
     // create new point cloud material
@@ -292,7 +265,6 @@ function plotData() {
 
     var pointCloud = new THREE.Points(pointGeometry, pointCloudMaterial)
     scene.add(pointCloud)
-    console.log(colors[i])
   }
   return true
 }
