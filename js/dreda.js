@@ -5,10 +5,10 @@
 
 // globals
 var scene, camera, renderer, effect, controls, stats;
-var canvas = document.getElementById('data-canvas')
+var canvas = document.getElementById('data-canvas');
 
-var canvasHalfX = canvas.clientWidth / 2;
-var canvasHalfY = canvas.clientHeight / 2;
+var windowHalfX = window.innerWidth / 2;
+var windowHalfY = window.innerHeight / 2;
 
 // custom globals for data
 var data;
@@ -82,7 +82,7 @@ function init() {
 
   // add a camera
   var VIEW_ANGLE = 45;
-  var ASPECT = canvas.clientWidth / canvas.clientHeight;
+  var ASPECT = window.innerWidth / window.innerHeight;
   var NEAR = 0.1;
   var FAR = edge * 20;
   camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
@@ -97,15 +97,14 @@ function init() {
 
   // create the renderer
   renderer = new THREE.WebGLRenderer({antialias : true, alpha : true, canvas : canvas});
-  renderer.setPixelRatio( window.devicePixelRatio );
-  // renderer.setViewport(0, 0, canvas.clientWidth, canvas.clientHeight)
+  renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setClearColor(0x1A1A1A, 1);
 
   effect = new THREE.StereoEffect(renderer);
   effect.eyeSeparation = 10;
-  effect.setSize(canvas.clientWidth, canvas.clientHeight);
+  effect.setSize(window.innerWidth, window.innerHeight);
 
-  // for the gyroscope positioning see: 
+  // for the gyroscope positioning see:
   // https://virtualrealitypop.com/experimenting-with-threejs-for-virtual-reality-and-google-cardboard-86e67ba31b1c
   // https://github.com/jtq/cardboard-vr
   // https://www.sitepoint.com/bringing-vr-to-web-google-cardboard-three-js/
@@ -170,18 +169,20 @@ function update() {
 }
 
 function render() {
-  effect.render( scene, camera );
+  effect.render(scene, camera);
   //renderer.render(scene, camera);
 }
 
 // resize - listener
 
 window.addEventListener('resize', function() {
-  canvasHalfX = canvas.clientWidth / 2;
-  canvasHalfY = canvas.clientHeight / 2;
-  camera.aspect = canvas.clientWidth / canvas.clientHeight;
+  windowHalfX = window.innerWidth / 2;
+  windowHalfY = window.innerHeight / 2;
+
+  camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-  effect.setSize(canvas.clientWidth, canvas.clientHeight);
+
+  effect.setSize( window.innerWidth, window.innerHeight );
 });
 
 function resetCamera() {
@@ -192,10 +193,10 @@ function resetCamera() {
   camera.lookAt(scene.position);
 }
 
-document.addEventListener( 'mousemove', function() {
-    mouseX = ( event.clientX - canvasHalfX ) * 10;
-    mouseY = ( event.clientY - canvasHalfY ) * 10;
-}, false );
+window.addEventListener('mousemove', function() {
+  mouseX = ( event.clientX - windowHalfX ) * 10;
+  mouseY = ( event.clientY - windowHalfY ) * 10;
+}, false);
 
 ////////
 ////////
@@ -251,9 +252,9 @@ function plotData() {
   var keys = Object.keys(data)
   grouped = _.groupBy(organized, keys[3]) // group by color
   groupedSize = _.size(grouped);
-  groupedKeys = Object.keys(grouped)
+  groupedKeys = Object.keys(grouped);
 
-                    for (var i = 0; i < groupedSize; i++) {
+  for (var i = 0; i < groupedSize; i++) {
 
     // create new point cloud material
     var pointGeometry = new THREE.Geometry();
@@ -267,6 +268,7 @@ function plotData() {
       vertex.y = grouped[groupedKeys[i]][j][keys[1]];
       vertex.z = grouped[groupedKeys[i]][j][keys[2]];
       pointGeometry.vertices.push(vertex);
+
       // assign colors
       pointColors[j] = new THREE.Color(colors[i]);
     }
